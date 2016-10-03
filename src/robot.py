@@ -1,41 +1,48 @@
 #!/usr/bin/python
+from __future__ import print_function
 
 import Adafruit_PCA9685
 import time
-import flask
+from flask import Flask
+app = Flask(__name__)
+app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 
-# ===========================================================================
-# Example Code
-# ===========================================================================
-
-# Initialise the PWM device using the default address
-# pwm = PWM(0x40)
-# Note if you'd like more debug output you can instead run:
-pwm = Adafruit_PCA9685.PCA9685()
-servoMin = 200  # Min pulse length out of 4096
-servoMax = 600  # Max pulse length out of 4096
-
-def set_servo_pulse(channel, pulse):
-  pulse_length = 1000000                   # 1,000,000 us per second
-  pulse_length //= 60                       # 60 Hz
-  print "%d us per period" % pulse_length
-  pulse_length //= 4096                     # 12 bits of resolution
-  print "%d us per bit" % pulse_length
-  pulse *= 1000
-  pulse /= pulse_length
-  pwm.set_pwm(channel, 0, pulse)
+# Set up servo configuration
+with open("../servos.yml", 'r') as stream:
+    try:
+		servos = yaml.load(stream)
+    except yaml.YAMLError as exc:
+        print(exc)
 
 pwm.set_pwm_freq(60)                        # Set frequency to 60 Hz
-while (True):
-  # Change speed of continuous servo on channel O
-  pwm.set_pwm(0, 0, servoMin)
-  pwm.set_pwm(1, 0, servoMin)
-  pwm.set_pwm(2, 0, servoMin)
-  time.sleep(1)
-  pwm.set_pwm(0, 0, servoMax)
-  pwm.set_pwm(1, 0, servoMax)
-  pwm.set_pwm(2, 0, servoMax)
-  time.sleep(1)
 
+def move(channel, position):
+	time.sleep(0.01) # allow for a little delay to prevent heavy power dips
+	pwm.set_pwm(channel, 0, position)
 
+def spreadEagle():
+	for servo, properties in servos.iteritems():
+		print('Moving servo:', servo)
+		print(properties['port'])
+		time.sleep(0.1)
+		move(properties['port'], properties['spreadEaglePosition'])
+
+def crab():
+	for servo, properties in servos.iteritems():
+		print('Moving servo:', servo)
+		print(properties['port'])
+		time.sleep(0.1)
+		move(properties['port'], properties['crabPosition'])
+
+# set up web server routes
+@app.route("/favicon.ico")
+def favicon():
+	return app.send_static_file('favicon.ico')
+
+@app.route("/calibrate")
+def calibrate():
+	return render_template('index.jade', )
+	
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
 
