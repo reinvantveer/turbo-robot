@@ -1,0 +1,40 @@
+servo0:
+  port: 0
+  label: Shoulder 1
+  spreadEaglePosition: 190
+  crabPosition: 420
+servo1:
+  port: 1
+  label: Leg 1
+  spreadEaglePosition: 400
+  crabPosition: 680
+servo2:
+  port: 2
+  label: Shoulder 2
+  spreadEaglePosition: 670
+  crabPosition: 400
+servo3:
+  port: 3
+  label: Leg 2
+  spreadEaglePosition: 500
+  crabPosition: 240
+servo4:
+  port: 4
+  label: Shoulder 3
+  spreadEaglePosition: 180
+  crabPosition: 400
+servo5:
+  port: 5
+  label: Leg 3
+  spreadEaglePosition: 400
+  crabPosition: 680
+servo6:
+  port: 6
+  label: Shoulder 4
+  spreadEaglePosition: 660
+  crabPosition: 400
+servo7:
+  port: 7
+  label: Leg 4
+  spreadEaglePosition: 500
+  crabPosition: 260

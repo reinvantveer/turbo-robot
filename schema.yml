@@ -1,0 +1,16 @@
+schema:
+  type: "object"
+  title: Servos
+  properties:
+    servo:
+      type: "object"
+      title: Servo
+      properties:
+        port:
+          type: "integer"
+        label:
+          type: "string"
+        spreadEaglePosition:
+          type: "integer"
+        crabPosition:
+          type: "integer"

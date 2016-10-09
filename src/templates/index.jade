@@ -1,0 +1,53 @@
+html
+  head
+  link(rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')
+  script(src='https://rawgit.com/jdorn/json-editor/master/dist/jsoneditor.js')
+  script(src='http://code.jquery.com/jquery-3.1.1.min.js')
+  script(type='text/javascript').
+    'use strict';
+    function operate(action) {
+      console.log('Doing', action);
+      $.ajax({
+        url: '/operate?action=' + action,
+        method: 'POST',
+        success: function(response) {
+          console.log('Success:', response);
+        },
+        error: function(response) {
+          var errorMessage = response.responseJSON.message
+          alert('Oops:' + errorMessage);
+          console.error(response);
+        }
+      });
+    }
+
+  body
+  main(class='container')
+    h1 Turbo Robot calibrate!
+
+    button(id='crab' class='btn-primary') Do the Crab!
+    script(type='text/javascript').
+        $('#crab').click(function() { operate('crab') });
+    br
+
+    button(id='eagle' class='btn-primary') Do the Spread Eagle!
+    script(type='text/javascript').
+        $('#eagle').click(function() { operate('spreadEagle') });
+
+    h2 Here you can test and calibrate the settings of your servo configuration
+    div(id='editor_holder')
+    button(id='save' class='btn-primary') Save
+
+    script(type='text/javascript').
+      JSONEditor.defaults.options.theme = 'bootstrap3';
+      var servoString = '#{servos}';
+      var schemaString = '#{schema}';
+      var servos = JSON.parse(servoString.replace(/\&\#39\;/g, '\"'));
+      var schema = JSON.parse(schemaString.replace(/\&\#39\;/g, '\"'));
+      var editor = new JSONEditor(document.getElementById('editor_holder'), {
+        schema: schema,
+        startval: servos
+      });
+
+    h1 Turbo Robot run!
+    button(id='run-stop' class='btn-primary') Run Robot Run!
