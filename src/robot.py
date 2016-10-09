@@ -10,6 +10,8 @@ app = Flask(__name__)
 app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 
 # Set up servo configuration
+isWalking = False
+
 with open("../servos.yml", 'r') as stream:
     try:
 		servos = yaml.load(stream)
@@ -32,21 +34,60 @@ def move(channel, position):
 
 def spreadEagle():
 	for servo, properties in servos.iteritems():
-		print('Moving servo:', servo)
-		print(properties['port'])
 		time.sleep(0.1)
 		move(properties['port'], properties['spreadEaglePosition'])
 
 def crab():
 	for servo, properties in servos.iteritems():
-		print('Moving servo:', servo)
-		print(properties['port'])
 		time.sleep(0.1)
 		move(properties['port'], properties['crabPosition'])
 
+def prepareWalk():
+	for servo, properties in servos.iteritems():
+		time.sleep(0.1)
+		move(properties['port'], properties['walkPosition'])
+		servos[servo]['currentPosition'] = properties['walkPosition']
+
+def returnHome(shoulder, leg):
+	homePosition = shoulder['walkPositionHome']
+	move(leg['port'], leg['spreadEaglePosition'])
+	move(shoulder['port'], shoulder[homePosition])
+	move(leg['port'], leg['crabPosition'])
+
+def step():
+	for servo, properties in servos.iteritems():
+		print(properties['currentPosition'])
+		time.sleep(0.1)
+		if properties['type'] == 'shoulder':
+			# shoulder 1 moves towards spreadeagle, and returns to crab
+			# shoulder 2 moves away from, and returns to spreadeagle
+			# shoulder 3 moves towards spreadeagle, and returns to crab
+			# shoulder 4 moves away from, and returns to spreadeagle
+			delta = (properties['crabPosition'] - properties['spreadEaglePosition']) / 3
+			print(properties['label'], ',', delta)
+			if not properties['currentPosition'] == properties['spreadEaglePosition']:
+				move(properties['port'], properties['currentPosition'] - delta)
+	
+def startWalking():
+	prepareWalk()
+
+	isWalking = True
+	while isWalking == True:
+		for servo, properties in servos.iteritems():
+			print(properties['currentPosition'])
+			time.sleep(0.1)
+			if properties.type == 'shoulder':
+				move(properties['port'], properties['walkPosition'])
+
+
+def stopWalking():
+	isWalking = False
+
 actions = {
 	'spreadEagle': spreadEagle,
-	'crab': crab
+	'crab': crab,
+	'prepareWalk': prepareWalk,
+	'step': step
 }
 
 # set up API error handling 
@@ -90,7 +131,7 @@ def operate():
 
 	return 'Doing ' + action
 
-@app.route("/calibrate")
+@app.route("/")
 def calibrate():
 	return render_template('index.jade', servos = servos, schema = schema)
 	

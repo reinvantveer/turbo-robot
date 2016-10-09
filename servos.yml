@@ -1,40 +1,60 @@
 servo0:
   port: 0
+  type: shoulder
   label: Shoulder 1
   spreadEaglePosition: 190
   crabPosition: 420
+  walkPosition: 420
+  walkPositionHome: crabPosition
 servo1:
   port: 1
+  type: leg
   label: Leg 1
   spreadEaglePosition: 400
   crabPosition: 680
+  walkPosition: 680
 servo2:
   port: 2
+  type: shoulder
   label: Shoulder 2
   spreadEaglePosition: 670
   crabPosition: 400
+  walkPosition: 490
+  walkPositionHome: spreadEaglePosition
 servo3:
   port: 3
+  type: leg
   label: Leg 2
   spreadEaglePosition: 500
   crabPosition: 240
+  walkPosition: 240
 servo4:
   port: 4
+  type: shoulder
   label: Shoulder 3
   spreadEaglePosition: 180
   crabPosition: 400
+  walkPosition: 250
+  walkPositionHome: spreadEaglePosition
 servo5:
   port: 5
+  type: leg
   label: Leg 3
   spreadEaglePosition: 400
   crabPosition: 680
+  walkPosition: 680
 servo6:
   port: 6
+  type: shoulder
   label: Shoulder 4
   spreadEaglePosition: 660
   crabPosition: 400
+  walkPosition: 660
+  walkPositionHome: crabPosition
 servo7:
   port: 7
+  type: leg
   label: Leg 4
   spreadEaglePosition: 500
   crabPosition: 260
+  walkPosition: 260
